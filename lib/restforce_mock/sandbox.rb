@@ -18,7 +18,6 @@ module RestforceMock
 
     def self.update_object(name, id, attrs)
       current = storage[name][id]
-      validate_all_present_fields!(current, attrs)
       storage[name][id] = current.merge(attrs)
     end
 
