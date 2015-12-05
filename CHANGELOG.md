@@ -1,5 +1,6 @@
 ## 0.4.1
 
+* Validate that schema file is preset
 * Remove update validation, better update validation coming
 
 ## 0.4.0

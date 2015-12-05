@@ -52,8 +52,6 @@ module RestforceMock
 
     def validate_schema!(object)
       if RestforceMock.configuration.raise_on_schema_missing
-        raise RestforceMock::Error.new("No schema for Salesforce object is available") unless schema
-
         unless schema[object]
           raise RestforceMock::Error.new("No schema for Salesforce object #{object}")
         end
@@ -66,7 +64,11 @@ module RestforceMock
       @schema ||=
         begin
           manager = RestforceMock::SchemaManager.new
-          manager.load_schema(RestforceMock.configuration.schema_file)
+          begin
+            manager.load_schema(RestforceMock.configuration.schema_file)
+          rescue Errno::ENOENT
+            RestforceMock::Error.new("No schema for Salesforce object is available")
+          end
         end
     end
 
