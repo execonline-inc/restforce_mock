@@ -67,7 +67,7 @@ module RestforceMock
           begin
             manager.load_schema(RestforceMock.configuration.schema_file)
           rescue Errno::ENOENT
-            RestforceMock::Error.new("No schema for Salesforce object is available")
+            raise RestforceMock::Error.new("No schema for Salesforce object is available")
           end
         end
     end
