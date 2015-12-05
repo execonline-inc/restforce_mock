@@ -1,4 +1,4 @@
-## 0.4.1
+## 0.5.0
 
 * Validate that schema file is preset
 * Validate that objects are present in schema
