@@ -3,7 +3,7 @@
 * Validate that schema file is preset
 * Validate that objects are present in schema
 * Remove update validation, better update validation coming
-* Rake task to load schema (experimentatal)
+* Rake task to load schema (experimental)
 
 ## 0.4.0
 
