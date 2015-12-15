@@ -43,8 +43,16 @@ This will direct all calls to `Restforce` to `RestforceMock`. Test as usual.
 ```ruby
 RestforceMock.configure do |config|
   config.schema_file = "spec/fixtures/schema.yml"
-  config.error_on_required = true  # raise error if required field is not set
+
+  # raise error if required field is not set (default: true)
+  config.error_on_required = true
   config.required_exclusions = [:LastModifiedById ...] # fields that should not be considered required
+
+  # raise error if schema is not available (default: false)
+  config.raise_on_schema_missing = true
+
+  # objects in SF that should be loaded into the schema used for RestforceMock
+  config.objects_for_schema = ["Contact", "Opportunity" ...]
 end
 ```
 

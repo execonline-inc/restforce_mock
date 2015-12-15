@@ -3,39 +3,6 @@ require 'spec_helper'
 describe RestforceMock do
   let(:client) { RestforceMock::Client.new }
 
-  describe "#configure" do
-    before do
-      RestforceMock.reset
-    end
-
-    it "set schema file" do
-      RestforceMock.configure do |config|
-        config.schema_file = "tmp"
-      end
-
-      expect( RestforceMock.configuration.schema_file ).to eq "tmp"
-    end
-
-    describe "error_on_required" do
-
-      it "set to true" do
-        RestforceMock.configure do |config|
-          config.error_on_required = true
-        end
-
-        expect( RestforceMock.configuration.error_on_required ).to eq true
-      end
-
-      it "sets to true by default" do
-        expect( RestforceMock.configuration.error_on_required ).to eq true
-      end
-    end
-
-    it "doesn't set schema file by default" do
-      expect( RestforceMock.configuration.schema_file ).to be_nil
-    end
-  end
-
   describe "version" do
     it 'has a version number' do
       expect(RestforceMock::VERSION).not_to be nil
@@ -94,6 +61,25 @@ describe RestforceMock do
     end
 
     describe "api_patch" do
+
+      it "raises error if schema is missing" do
+        expect(RestforceMock.configuration).to(
+          receive(:raise_on_schema_missing) { true }
+        )
+
+        id = "HGUKK674J79HjsH"
+        values = {
+          Name: "Name here",
+          Program__c: "1234",
+          Section_Name__c: "12345"
+        }
+        RestforceMock::Sandbox.add_object("Object__c", id, values)
+
+        expect {
+          client.api_patch("/sobjects/Object__c/#{id}", values)
+        }.to raise_error /Schema file is not defined/
+      end
+
       it "validates required fields" do
         id = "HGUKK674J79HjsH"
         values = {
@@ -115,6 +101,34 @@ describe RestforceMock do
     end
 
     describe "api_post" do
+
+      it "raises error if schema file is missing" do
+        expect(RestforceMock.configuration).to(
+          receive(:raise_on_schema_missing) { true }
+        )
+
+        expect {
+          values = { Name: "Name here" }
+          body = client.api_post("/sobjects/Contact", values)
+        }.to raise_error /Schema file is not defined/
+      end
+
+      it "raises error if schema for an object is missing" do
+        expect(RestforceMock.configuration).to(
+          receive(:raise_on_schema_missing) { true }
+        )
+        expect(RestforceMock.configuration).to(
+          receive(:schema_file) {
+            "spec/fixtures/required_schema.yml"
+          }
+        )
+
+        expect {
+          values = { Name: "Name here" }
+          body = client.api_post("/sobjects/Contact", values)
+        }.to raise_error /No schema for Salesforce object Contact/
+      end
+
       it "mock out POST request" do
         values = { Name: "Name here" }
         body = client.api_post("/sobjects/Contact", values)
@@ -125,13 +139,13 @@ describe RestforceMock do
       end
 
       context "errors on required is enabled" do
-        before do
-          RestforceMock.configure do |config|
-            config.schema_file = "spec/fixtures/required_schema.yml"
-          end
-        end
-
         it "validates required fields" do
+          expect(RestforceMock.configuration).to(
+            receive(:schema_file) {
+              "spec/fixtures/required_schema.yml"
+            }
+          ).at_least(:once)
+
           values = { Name: "Name here" }
           expect {
             client.api_post("/sobjects/Object__c", values)
