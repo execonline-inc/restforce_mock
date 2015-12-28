@@ -68,6 +68,8 @@ require 'organizations/tasks'
 task "restforce_mock:schema:dump"
 ```
 
+Rake task requires environmental variables set up as described [here](https://github.com/ejholmes/restforce#usernamepassword-authentication)
+
 You can now run
 
 `rake restforce_mock:schema:dump`
