@@ -4,8 +4,6 @@
   - [![Version](http://img.shields.io/gem/v/restforce_mock.svg?style=flat-square)](https://rubygems.org/gems/restforce_mock)
   - [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 
-
-
 Mock out [Restforce](https://github.com/ejholmes/restforce) in tests
 
 ## Installation
@@ -13,12 +11,15 @@ Mock out [Restforce](https://github.com/ejholmes/restforce) in tests
 Add this line to your application's Gemfile:
 
 ```ruby
-group :test do
+group :development, :test do
 
   gem 'restforce_mock'
 
 end
 ```
+
+_Note_: You may elect to add it to the `:test` group only if you do not want to
+use rake task as described below
 
 And then execute:
 
@@ -54,6 +55,32 @@ RestforceMock.configure do |config|
   # objects in SF that should be loaded into the schema used for RestforceMock
   config.objects_for_schema = ["Contact", "Opportunity" ...]
 end
+```
+
+### Salesforce Schema
+
+If you decide to use `config.schema_file` you will need to load schema from Salesforce.
+
+Restforce_mock comes with a rake task
+
+```ruby
+require 'organizations/tasks'
+task "restforce_mock:schema:dump"
+```
+
+Rake task requires environmental variables set up as described [here](https://github.com/ejholmes/restforce#usernamepassword-authentication)
+
+You can now run
+
+`rake restforce_mock:schema:dump`
+
+#### Rails
+
+If you environment (eg. Rails) setups salesforce variables
+
+```ruby
+require 'organizations/tasks'
+task "restforce_mock:schema:dump" => :environment
 ```
 
 ### Mimicking Salesforce data
