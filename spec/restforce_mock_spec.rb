@@ -172,6 +172,59 @@ describe RestforceMock do
         end
       end
 
+      context 'api_get' do
+        describe '#find' do
+          it "mocks out GET request for a find" do
+            RestforceMock::Sandbox.add_object("Contact", '12345',
+                                              {:Email=>"debrah.obrian@yahoo.com"})
+            response = client.api_get("/sobjects/Contact/12345", '12345')
+            expect(response.body).to eq({"id"=>{:Email=>"debrah.obrian@yahoo.com"}})
+          end
+
+          it "returns nil if object does not exist" do
+            response = client.api_get("/sobjects/Contact/12345", '123457')
+            expect(response.body).to eq ({"id" => nil})
+          end
+        end
+
+        describe 'mocks out GET request for a query' do
+          it "given email without single quote" do
+            RestforceMock::Sandbox.add_object("Contact", '12345',
+                                              {:Email=>"debrah.obrian@yahoo.com"})
+            email = "debrah.obrian@yahoo.com"
+            response = client.api_get("query", q: "Select Id FROM Contact WHERE Email = '#{email}'")
+            expect(response.body.map(&:Id).first).to eq('12345')
+          end
+
+          it "given email with escaped single quotes" do
+            RestforceMock::Sandbox.add_object("Contact", '123456',
+                                              {:Email=>"debrah.o'brian@yahoo.com"})
+            email = "debrah.o\\'brian@yahoo.com"
+            response = client.api_get("query", q: "Select Id FROM Contact WHERE Email = '#{email}'")
+            expect(response.body.map(&:Id).first).to eq('123456')
+          end
+
+          it "returns nil if object does not exist" do
+            email = "no.exist@yahoo.com"
+            response = client.api_get("query", q: "Select Id FROM Contact WHERE Email = '#{email}'")
+            expect(response.body.map(&:Id).first).to eq nil
+          end
+        end
+
+        describe '#get_object' do
+          it "mocks out GET request using the sandbox get object" do
+            RestforceMock::Sandbox.add_object("Contact", '12345',
+                                              {:Email=>"debrah.obrian@yahoo.com"})
+            response = RestforceMock::Sandbox.get_object("Contact", '12345')
+            expect(response).to eq({:Email=>"debrah.obrian@yahoo.com"})
+          end
+
+          it "returns nil if object does not exist" do
+            response = RestforceMock::Sandbox.get_object("Contact", '1234598')
+            expect(response).to eq nil
+          end
+        end
+      end
     end
   end
 

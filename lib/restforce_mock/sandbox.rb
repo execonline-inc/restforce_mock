@@ -12,8 +12,33 @@ module RestforceMock
       RestforceMock::Sandbox.add_object(name, id, values)
     end
 
+    def get_object(name, id)
+      RestforceMock::Sandbox.get_object(name, id)
+    end
+
     def self.get_object(name, id)
       storage[name][id]
+    end
+
+    def get_object_from_query(query)
+      RestforceMock::Sandbox.find_object(query)
+    end
+
+    def self.find_object(query)
+      # This will only support making queries in this format:
+      # client.query("Select Id FROM Contact WHERE Email = 'debrah.obrian@yahoo.com'")
+
+      split_query = query.split
+
+      storage_name = split_query[3]
+      key = "#{split_query[5]}".to_sym
+      val = split_query.last
+                  .gsub(/^'|'$/, '')
+                  .gsub('\\', '')
+
+      if storage[storage_name].has_value?( key => val)
+        return storage[storage_name].keys.first
+      end
     end
 
     def self.update_object(name, id, attrs)

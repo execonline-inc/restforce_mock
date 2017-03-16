@@ -7,6 +7,25 @@ module RestforceMock
     include ::Restforce::Concerns::API
     include RestforceMock::Sandbox
 
+    def mashify?
+      true
+    end
+
+    def api_get(url, attrs = nil)
+      url=~/sobjects\/(.+)\/(.+)/
+      object=$1
+      id=$2
+
+      if !attrs.nil? && url == 'query'
+        query = attrs.values.first
+        response = get_object_from_query(query)
+        return Body.new(response, url)
+      else
+        response = get_object(object, id)
+        return Body.new(response)
+      end
+    end
+
     def api_patch(url, attrs)
       url=~/sobjects\/(.+)\/(.+)/
       object=$1
@@ -73,8 +92,17 @@ module RestforceMock
     end
 
     class Body
-      def initialize(id)
-        @body = {'id' => id}
+      def initialize(id, type= nil)
+        collection = {"totalSize"=>1, "done"=>true,
+                      "records"=>[{"attributes"=>{"type"=>"Contact", "url"=>""}, "Id"=> id}]}
+
+        @body =
+
+          if type == 'query'
+           Restforce::Collection.new(collection, Restforce::Data::Client.new)
+          else
+            {'id' => id}
+          end
       end
 
       def body
