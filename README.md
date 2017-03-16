@@ -97,6 +97,24 @@ To access the object in the RestforceMock object
   RestforceMock::Sandbox.get_object("Contact", "HGUKK674J79HjsH")
 ```
 
+To find an object with the salesforce find method
+
+```ruby
+  client = RestforceMock::Client.new
+  RestforceMock::Sandbox.add_object("Contact", '12345', {:Email=>"example@yahoo.com"})
+  client.find('Contact', '12345')
+```
+
+To make a query with the salesforce query method
+
+```ruby
+  client = RestforceMock::Client.new
+  RestforceMock::Sandbox.add_object("Contact", '12345', {:Email=>"example@yahoo.com"})
+  client.query("Select Id FROM Contact WHERE Email = 'example@yahoo.com'")
+```
+
+Note: when making a `find` or `query`, it should be in the format specified above.
+
 RestforceMock sandbox is **shared across all your tests** (same way as real Salesforce instace would be), hence,
 after completion of tests make sure to clean up if necessary
 
