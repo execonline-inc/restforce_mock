@@ -1,6 +1,7 @@
 # RestforceMock
 
   - [![Build](http://img.shields.io/travis-ci/ilyakatz/restforce_mock.svg?style=flat-square)](https://travis-ci.org/execonline-inc/restforce_mock)
+  - [![Build](https://img.shields.io/codeclimate/github/kabisaict/flow.svg)](https://codeclimate.com/github/execonline-inc/restforce_mock)
   - [![Version](http://img.shields.io/gem/v/restforce_mock.svg?style=flat-square)](https://rubygems.org/gems/restforce_mock)
   - [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 
