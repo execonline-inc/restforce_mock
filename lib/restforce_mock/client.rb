@@ -8,7 +8,7 @@ module RestforceMock
     include ::Restforce::Concerns::API
     include RestforceMock::Sandbox
 
-    def initialize(*args)
+    def initialize(opts = {})
     end
 
     def mashify?
