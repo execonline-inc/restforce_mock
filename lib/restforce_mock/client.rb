@@ -1,11 +1,15 @@
 require "restforce"
 require "restforce_mock/sandbox"
+require 'securerandom'
 
 module RestforceMock
   class Client
 
     include ::Restforce::Concerns::API
     include RestforceMock::Sandbox
+
+    def initialize(opts = {})
+    end
 
     def mashify?
       true
@@ -38,7 +42,7 @@ module RestforceMock
     def api_post(url, attrs)
       url=~/sobjects\/(.+)/
       sobject = $1
-      id = SecureRandom.urlsafe_base64(13) #duplicates possible
+      id = ::SecureRandom.urlsafe_base64(13) #duplicates possible
       validate_schema!(sobject)
       validate_requires!(sobject, attrs)
       add_object(sobject, id, attrs)
