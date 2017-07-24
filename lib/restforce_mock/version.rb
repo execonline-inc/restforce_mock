@@ -1,3 +1,3 @@
 module RestforceMock
-  VERSION = "0.7.0"
+  VERSION = "0.7.1"
 end
