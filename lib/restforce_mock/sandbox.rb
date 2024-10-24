@@ -80,7 +80,7 @@ module RestforceMock
     def self.validate_all_present_fields!(current, attrs)
       missing = attrs.keys - current.keys
       unless missing.length == 0
-        raise Faraday::Error::ResourceNotFound.new(
+        raise Faraday::ResourceNotFound.new(
           "INVALID_FIELD_FOR_INSERT_UPDATE: Unable to create/update fields: #{missing}." +
           " Please check the security settings of this field and verify that it is " +
           "read/write for your profile or permission set")
